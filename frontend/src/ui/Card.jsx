@@ -1,3 +1,5 @@
+import React from "react";
+
 // Um contêiner básico com borda, fundo e título opcional
 export const Card = ({ title, children, className = "" }) => (
   <div className={`bg-zinc-900/70 rounded-2xl border border-zinc-800 shadow-lg ${className}`}>

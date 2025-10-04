@@ -1,4 +1,5 @@
 import { NavLink } from "react-router-dom";
+import React from "react";
 /**
  * Barra de navegação superior
  * Simula as abas da aplicação: Data, Training, Results, etc.

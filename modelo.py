@@ -19,6 +19,7 @@ FEATURES = [
     "planet_radius_re","stellar_teff_k","stellar_logg","stellar_radius_rs"
 ]
 MODEL_PATH = "model.pkl"
+TEST_PATH  = "test.csv" 
 
 # ---------- utils ----------
 def _to_num(s):
@@ -159,6 +160,11 @@ def main(n_estimators=500, max_depth=20, threshold=0.5):
 
     score_k2  = rf.predict_proba(X_test2)[:,1]
     print_report(f"[K2]        n={n_estimators} depth={max_depth}", y_test2, score_k2, threshold)
+
+    # 🔽 Exporta dataset de teste (features + label)
+    export_df = test_df[FEATURES + ["label"]].copy()
+    export_df.to_csv(TEST_PATH, index=False)
+    print(f"Dataset de teste salvo em {TEST_PATH} (shape={export_df.shape})")
 
     return rf
 

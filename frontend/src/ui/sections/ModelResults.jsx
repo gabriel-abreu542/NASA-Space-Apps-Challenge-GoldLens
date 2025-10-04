@@ -1,7 +1,7 @@
 import { Card } from "../Card";
 import { ConfusionMatrix } from "../../viz/ConfusionMatrix";
 import { ImportanceBar } from "../../viz/ImportanceBar";
-
+import React from "react";
 /**
  * Resultados do modelo:
  * - Matriz de confusão

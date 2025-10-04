@@ -1,5 +1,5 @@
 import TopNavigation from "./ui/sections/TopNavigation";
-
+import React from "react";
 import "./index.css";
 import Dashboard from "./ui/sections/Dashboard";
 import BatchAnalysis from "./ui/sections/BatchAnalysis";
