@@ -19,17 +19,20 @@ const Table = ({ columns, rows }) => {
   key={colIndex}
   className={`px-4 py-3 text-center
     ${
-      row[col] >= 100
-        ? "bg-green-600 text-white"
-        : row[col] >= 50
-        ? "bg-yellow-500 text-black"
-        : row[col] > 0
-        ? "bg-red-500 text-white"
-        : "bg-zinc-800 text-gray-300"
+      col === "P_PLANET"
+        ? row[col] >= 100
+          ? "bg-green-600 text-white"
+          : row[col] >= 50
+          ? "bg-yellow-500 text-black"
+          : row[col] > 0
+          ? "bg-red-500 text-white"
+          : "bg-zinc-800 text-gray-300"
+        : ""
     }`}
 >
   {row[col] ?? "-"}
 </td>
+
               ))}
             </tr>
           ))}
