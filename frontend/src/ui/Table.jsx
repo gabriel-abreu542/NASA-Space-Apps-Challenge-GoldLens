@@ -15,9 +15,24 @@ const Table = ({ columns, rows }) => {
           {rows.map((row, rowIndex) => (
             <tr key={rowIndex} className="hover:bg-zinc-800/50 transition-colors">
               {columns.map((col, colIndex) => (
-                <td key={colIndex} className="px-4 py-3">
-                  {row[col] ?? "-"}
-                </td>
+                <td
+  key={colIndex}
+  className={`px-4 py-3 text-center
+    ${
+      col === "P_PLANET"
+        ? row[col] >= 100
+          ? "bg-green-600 text-white"
+          : row[col] >= 50
+          ? "bg-yellow-500 text-black"
+          : row[col] > 0
+          ? "bg-red-500 text-white"
+          : "bg-zinc-800 text-gray-300"
+        : ""
+    }`}
+>
+  {row[col] ?? "-"}
+</td>
+
               ))}
             </tr>
           ))}
