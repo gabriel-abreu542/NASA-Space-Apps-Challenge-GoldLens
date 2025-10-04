@@ -76,7 +76,7 @@ const BatchAnalysis = () => {
             >
                 {csvData && !trainingComplete ? (
                 <div className="flex flex-col items-center gap-4">
-                    <p className="text-green-600 font-semibold">✅ Dados carregados: {/**nome do arquivo.csv */}</p>
+                    <p className="text-green-600 font-semibold">✅ Dados carregados: {csvData.name}</p>
                     <button
                     onClick={handleClassify}
                     className="px-6 py-2 bg-violet-500 text-white rounded-lg shadow hover:bg-violet-600 transition"
