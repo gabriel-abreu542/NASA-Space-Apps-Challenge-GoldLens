@@ -19,14 +19,14 @@ const Table = ({ columns, rows }) => {
   key={colIndex}
   className={`px-4 py-3 text-center
     ${
-      col === "P_PLANET"
-        ? row[col] >= 100
+      col === "p_planet"
+        ? Number(row[col].split('.')[0]) > 90 && Number(row[col].split('.')[0]) <= 100
           ? "bg-green-600 text-white"
-          : row[col] >= 50
+          : Number(row[col].split('.')[0]) >75 && Number(row[col].split('.')[0]) <= 90
           ? "bg-yellow-500 text-black"
-          : row[col] > 0
+          : Number(row[col].split('.')[0]) > 0 && Number(row[col].split('.')) <= 75
           ? "bg-red-500 text-white"
-          : "bg-zinc-800 text-gray-300"
+          : "bg-red-800 text-white"
         : ""
     }`}
 >

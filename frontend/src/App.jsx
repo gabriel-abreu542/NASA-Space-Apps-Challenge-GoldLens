@@ -5,7 +5,7 @@ import Dashboard from "./ui/sections/Dashboard";
 import BatchAnalysis from "./ui/sections/BatchAnalysis";
 import { Routes, Route } from "react-router-dom";
 import AboutPage from "./ui/sections/AboutPage";
-import IndividualForm from "./ui/primitives/IndividualForm";f
+import IndividualForm from "./ui/primitives/IndividualForm";
 
 /**
  * Componente principal da aplicação
