@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🌌 Sistema de Detecção de Exoplanetas</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <h1 class="header__title">🌌 Sistema de Detecção de Exoplanetas</h1>
+            <p class="header__subtitle">Descobrindo mundos distantes com Inteligência Artificial</p>
+        </div>
+    </header>
+
+    <!-- Navigation -->
+    <nav class="nav">
+        <div class="container">
+            <div class="nav__buttons">
+                <button class="nav__button nav__button--active" data-section="dashboard">Dashboard</button>
+                <button class="nav__button" data-section="individual">Análise Individual</button>
+                <button class="nav__button" data-section="batch">Análise em Lote</button>
+                <button class="nav__button" data-section="education">Como Funciona</button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="main">
+        <div class="container">
+            <!-- Dashboard Section -->
+            <section id="dashboard" class="section section--active">
+                <h2 class="section__title">Dashboard do Sistema</h2>
+                
+                <!-- Statistics Cards -->
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-card__icon">📊</div>
+                        <div class="stat-card__content">
+                            <h3 class="stat-card__title">Total de Análises</h3>
+                            <p class="stat-card__value" id="total-analyses">15,420</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-card__icon">✅</div>
+                        <div class="stat-card__content">
+                            <h3 class="stat-card__title">Planetas Confirmados</h3>
+                            <p class="stat-card__value" id="confirmed-planets">2,834</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-card__icon">🔍</div>
+                        <div class="stat-card__content">
+                            <h3 class="stat-card__title">Candidatos</h3>
+                            <p class="stat-card__value" id="candidates">4,521</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-card__icon">❌</div>
+                        <div class="stat-card__content">
+                            <h3 class="stat-card__title">Falsos Positivos</h3>
+                            <p class="stat-card__value" id="false-positives">8,065</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Model Metrics -->
+                <div class="metrics-section">
+                    <h3 class="metrics-section__title">Métricas do Modelo CNN+LSTM</h3>
+                    <div class="metrics-grid">
+                        <div class="metric-card">
+                            <h4 class="metric-card__title">Acurácia</h4>
+                            <div class="metric-card__value">96.1%</div>
+                            <div class="metric-card__bar">
+                                <div class="metric-card__progress" style="width: 96.1%"></div>
+                            </div>
+                        </div>
+                        <div class="metric-card">
+                            <h4 class="metric-card__title">Precisão Média</h4>
+                            <div class="metric-card__value">93.7%</div>
+                            <div class="metric-card__bar">
+                                <div class="metric-card__progress" style="width: 93.7%"></div>
+                            </div>
+                        </div>
+                        <div class="metric-card">
+                            <h4 class="metric-card__title">Recall Médio</h4>
+                            <div class="metric-card__value">92.1%</div>
+                            <div class="metric-card__bar">
+                                <div class="metric-card__progress" style="width: 92.1%"></div>
+                            </div>
+                        </div>
+                        <div class="metric-card">
+                            <h4 class="metric-card__title">F1-Score Médio</h4>
+                            <div class="metric-card__value">92.9%</div>
+                            <div class="metric-card__bar">
+                                <div class="metric-card__progress" style="width: 92.9%"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Charts -->
+                <div class="charts-section">
+                    <div class="chart-container" style="position: relative; height: 400px;">
+                        <canvas id="distributionChart"></canvas>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Individual Analysis Section -->
+            <section id="individual" class="section">
+                <h2 class="section__title">Análise Individual de Candidatos</h2>
+                
+                <div class="analysis-container">
+                    <div class="analysis-form">
+                        <form id="individual-form">
+                            <div class="form-group">
+                                <label class="form-label" for="target-name">
+                                    Nome do Alvo 
+                                    <span class="tooltip" title="Ex: Kepler-452b, TOI-1234.01">ℹ️</span>
+                                </label>
+                                <input type="text" id="target-name" class="form-control" placeholder="Ex: Kepler-452b" required>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label" for="mission">Missão Espacial</label>
+                                <select id="mission" class="form-control" required>
+                                    <option value="">Selecione a missão</option>
+                                    <option value="Kepler">Kepler</option>
+                                    <option value="K2">K2</option>
+                                    <option value="TESS">TESS</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label" for="light-curve">
+                                    Dados da Curva de Luz
+                                    <span class="tooltip" title="Valores de fluxo normalizado separados por vírgula">ℹ️</span>
+                                </label>
+                                <textarea id="light-curve" class="form-control" rows="4" 
+                                    placeholder="1.0002, 0.9998, 0.9995, 1.0001, 0.9997..." required></textarea>
+                                <div class="form-actions">
+                                    <button type="button" class="btn btn--secondary btn--sm" id="load-example-confirmed">
+                                        Carregar Exemplo - Planeta Confirmado
+                                    </button>
+                                    <button type="button" class="btn btn--secondary btn--sm" id="load-example-false">
+                                        Carregar Exemplo - Falso Positivo
+                                    </button>
+                                </div>
+                            </div>
+
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label class="form-label" for="period">Período (dias)</label>
+                                    <input type="number" id="period" class="form-control" step="0.1" placeholder="Ex: 384.8">
+                                </div>
+                                <div class="form-group">
+                                    <label class="form-label" for="depth">Profundidade (ppm)</label>
+                                    <input type="number" id="depth" class="form-control" step="1" placeholder="Ex: 152">
+                                </div>
+                            </div>
+
+                            <button type="submit" class="btn btn--primary btn--full-width" id="analyze-btn">
+                                <span class="btn-text">🔍 Analisar Candidato</span>
+                                <span class="btn-loader hidden">Analisando...</span>
+                            </button>
+                        </form>
+                    </div>
+
+                    <div class="analysis-results" id="analysis-results">
+                        <div class="results-placeholder">
+                            <div class="results-placeholder__icon">🌌</div>
+                            <p class="results-placeholder__text">Insira os dados e clique em "Analisar" para ver os resultados</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Batch Analysis Section -->
+            <section id="batch" class="section">
+                <h2 class="section__title">Análise em Lote</h2>
+                
+                <div class="upload-section">
+                    <div class="upload-area" id="upload-area">
+                        <div class="upload-content">
+                            <div class="upload-icon">📁</div>
+                            <p class="upload-text">Arraste um arquivo CSV aqui ou clique para selecionar</p>
+                            <p class="upload-subtext">Formato esperado: nome, curva_de_luz, missao</p>
+                        </div>
+                        <input type="file" id="csv-upload" accept=".csv" hidden>
+                    </div>
+                </div>
+
+                <div class="batch-results" id="batch-results">
+                    <!-- Results will be populated here -->
+                </div>
+            </section>
+
+            <!-- Education Section -->
+            <section id="education" class="section">
+                <h2 class="section__title">Como Funciona a Detecção de Exoplanetas</h2>
+                
+                <div class="education-content">
+                    <div class="education-card">
+                        <h3 class="education-card__title">🌟 Método de Trânsito</h3>
+                        <p class="education-card__text">
+                            O método de trânsito detecta exoplanetas observando pequenas diminuições na luz estelar 
+                            quando um planeta passa na frente de sua estrela hospedeira. Essas diminuições são 
+                            periódicas e características, permitindo identificar a presença de planetas.
+                        </p>
+                    </div>
+
+                    <div class="education-card">
+                        <h3 class="education-card__title">🧠 Modelo CNN+LSTM</h3>
+                        <p class="education-card__text">
+                            Nosso modelo híbrido CNN+LSTM analisa curvas de luz usando redes neurais convolucionais 
+                            para detectar padrões locais e redes LSTM para capturar dependências temporais. 
+                            Esta arquitetura é baseada no AstroNet do Google AI.
+                        </p>
+                    </div>
+
+                    <div class="education-card">
+                        <h3 class="education-card__title">📚 Glossário</h3>
+                        <div class="glossary">
+                            <div class="glossary-item">
+                                <strong>Trânsito:</strong> Passagem de um planeta na frente de sua estrela, causando diminuição temporária no brilho
+                            </div>
+                            <div class="glossary-item">
+                                <strong>Curva de Luz:</strong> Gráfico que mostra como o brilho de uma estrela varia ao longo do tempo
+                            </div>
+                            <div class="glossary-item">
+                                <strong>Falso Positivo:</strong> Sinal que parece ser um trânsito planetário mas é causado por outros fenômenos
+                            </div>
+                            <div class="glossary-item">
+                                <strong>BJD:</strong> Barycentric Julian Date - sistema de tempo astronômico corrigido para o centro de massa do sistema solar
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2025 Sistema de Detecção de Exoplanetas - Desafio NASA Space Apps</p>
+        </div>
+    </footer>
+
+    <script src="app.js"></script>
+</body>
+</html>
