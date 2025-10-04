@@ -19,7 +19,7 @@ const Table = ({ columns, rows }) => {
   key={colIndex}
   className={`px-4 py-3 text-center
     ${
-      col === "P_PLANET"
+      col === "p_planet"
         ? row[col] >= 100
           ? "bg-green-600 text-white"
           : row[col] >= 50
