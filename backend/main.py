@@ -1,5 +1,6 @@
 from flask import Flask, request, jsonify, Response
 import pandas as pd
+import json
 import numpy as np
 from flask_cors import CORS
 import joblib, os, io
@@ -7,7 +8,7 @@ import joblib, os, io
 app = Flask(__name__)
 CORS(app)
 
-MODEL_PATH = "rf_300.pkl"   # seu modelo salvo
+MODEL_PATH = "./rf_300.pkl"   # seu modelo salvo
 if not os.path.exists(MODEL_PATH):
     raise FileNotFoundError(f"Modelo não encontrado em {MODEL_PATH}")
 
