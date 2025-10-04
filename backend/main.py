@@ -31,11 +31,19 @@ CANDS = {
     "stellar_radius_rs":["stellar_radius_rs","st_rad","koi_srad","stellar_radius"],
 }
 
+# ======== load model ========
+if not os.path.exists(MODEL_PATH):
+    raise FileNotFoundError(f"Modelo não encontrado em {MODEL_PATH}")
+rf = joblib.load(MODEL_PATH)
+if not hasattr(rf, "predict_proba"):
+    raise ValueError("O modelo carregado não possui predict_proba().")
+
+# ======== helpers ========
 def _to_num(s: pd.Series) -> pd.Series:
     s = pd.Series(s, dtype="object").astype(str).str.replace(",", ".", regex=False)
     return pd.to_numeric(
         s.str.extract(r"([-+]?\d*\.?\d+(?:[eE][-+]?\d+)?)")[0],
-        errors="coerce"
+        errors="coerce",
     )
 
 def _get_any(df: pd.DataFrame, names) -> pd.Series:
@@ -50,62 +58,103 @@ def _get_any(df: pd.DataFrame, names) -> pd.Series:
     return pd.Series([np.nan] * len(df))
 
 def build_features_only(df: pd.DataFrame) -> pd.DataFrame:
-    """Retorna APENAS as 8 features padronizadas na ordem correta."""
     out = pd.DataFrame()
     lower = {c.lower().strip(): c for c in df.columns}
-    # caminho rápido: nomes já batem
     if all(f in lower for f in [c.lower() for c in FEATURES]):
         for f in FEATURES:
             out[f] = _to_num(df[lower[f.lower()]])
         return out
-    # senão, tenta mapear
     for f in FEATURES:
         out[f] = _get_any(df, CANDS[f])
     return out
 
 def prepare_input_to_features(df_in: pd.DataFrame, min_raw_nonnull: int = 3) -> pd.DataFrame:
     X = build_features_only(df_in)
-    # descarta linhas com info crua insuficiente antes de imputar
     keep = X.notna().sum(axis=1) >= min_raw_nonnull
     X = X.loc[keep].copy()
     if len(X) == 0:
-        raise ValueError("Nenhuma linha com informação suficiente para inferência (min_raw_nonnull).")
-    # saneia e imputa medianas do próprio input
+        raise ValueError(
+            f"Nenhuma linha com informação suficiente (min_raw_nonnull={min_raw_nonnull})."
+        )
     X = X.replace([np.inf, -np.inf], np.nan)
     med = X.median(numeric_only=True)
     for c in X.columns:
         X[c] = X[c].fillna(med[c])
     return X
 
+def read_payload_to_df(req) -> pd.DataFrame:
+    if "file" in req.files:
+        file = req.files["file"]
+        name = (file.filename or "").lower()
+        if name.endswith(".xlsx") or name.endswith(".xls"):
+            return pd.read_excel(file)
+        return pd.read_csv(file, sep=",", skipinitialspace=True, on_bad_lines="skip", engine="python")
+    if req.is_json:
+        payload = req.get_json()
+        if isinstance(payload, dict) and "data" in payload:
+            return pd.DataFrame(payload["data"])
+        return pd.DataFrame(payload)
+    raise ValueError("Envie um arquivo CSV/XLSX em 'file' ou JSON válido.")
+
+def format_prob_column(out: pd.DataFrame, prob_format: str, prob_decimals: int, keep_float: bool):
+    # já vem como p_planet_float de 0..1
+    if prob_format == "percent":
+        pct = (out["p_planet_float"] * 100).round(prob_decimals)
+        # formata com símbolo %
+        out["p_planet"] = pct.map(lambda x: f"{int(x)}%" if prob_decimals == 0 else f"{x:.{prob_decimals}f}%")
+    else:
+        # mantém decimal 0..1 com casas definidas
+        out["p_planet"] = out["p_planet_float"].round(prob_decimals)
+    if not keep_float:
+        out.drop(columns=["p_planet_float"], inplace=True)
+    return out
+
+
 @app.route("/predict", methods=["POST"])
 def predict():
     try:
-        # 1) entrada: CSV (multipart) ou JSON
-        if "file" in request.files:
-            file = request.files["file"]
-            df_in = pd.read_csv(
-                file, sep=",", skipinitialspace=True,
-                on_bad_lines="skip", engine="python"
-            )
-        elif request.is_json:
-            payload = request.get_json()
-            if isinstance(payload, dict) and "data" in payload:
-                df_in = pd.DataFrame(payload["data"])
-            else:
-                df_in = pd.DataFrame(payload)
-        else:
-            return jsonify({"error": "Envie um CSV em 'file' ou JSON válido."}), 400
+        # params
+        fmt = (request.args.get("format") or "json").lower()            # json|csv
+        top = request.args.get("top")
+        include_index = request.args.get("include_index", "0").lower() in ("1", "true")
+        min_raw_nonnull = int(request.args.get("min_raw_nonnull", 3))
+        prob_format = (request.args.get("prob_format") or "percent").lower()  # percent|float
+        prob_decimals = int(request.args.get("prob_decimals", 5))
+        keep_float = request.args.get("keep_float", "0").lower() in ("1", "true")
 
-        # 2) construir apenas features e preparar
-        X = prepare_input_to_features(df_in, min_raw_nonnull=3)
+        # 1) ler input
+        df_in = read_payload_to_df(request)
+
+        # 2) features only + preparo
+        X = prepare_input_to_features(df_in, min_raw_nonnull=min_raw_nonnull)
 
         # 3) prob de classe positiva
         p1 = rf.predict_proba(X[FEATURES])[:, 1]
         out = X.copy()
-        out["p_planet"] = p1
+        out["p_planet_float"] = pd.Series(p1, index=out.index)
 
-        # 4) formato de saída
-        fmt = (request.args.get("format") or "").lower()
+        # 4) ranking (maior -> menor) por probabilidade numérica
+        if include_index:
+            out = out.reset_index(names="orig_idx")
+        out = out.sort_values("p_planet_float", ascending=False)
+
+        # 5) top N opcional
+        if top is not None:
+            try:
+                n = int(top)
+                if n > 0:
+                    out = out.head(n)
+            except ValueError:
+                pass
+
+        # 6) formatar coluna final de probabilidade
+        out = format_prob_column(out, prob_format, prob_decimals, keep_float)
+
+        # 7) manter apenas features + prob(s)
+        keep_cols = FEATURES + (["orig_idx"] if include_index else []) + (["p_planet"] + (["p_planet_float"] if keep_float else []))
+        out = out[keep_cols]
+
+        # 8) resposta
         if fmt == "csv":
             buf = io.StringIO()
             out.to_csv(buf, index=False)
@@ -113,13 +162,13 @@ def predict():
             return Response(
                 buf.getvalue(),
                 mimetype="text/csv",
-                headers={"Content-Disposition": "attachment; filename=predicoes.csv"}
+                headers={"Content-Disposition": "attachment; filename=predicoes.csv"},
             )
-        # padrão: JSON
         return jsonify(out.to_dict(orient="records"))
 
     except Exception as e:
         return jsonify({"error": f"Erro ao processar: {str(e)}"}), 400
+
 
 @app.route("/", methods=["GET"])
 def health_check():
