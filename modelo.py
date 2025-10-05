@@ -188,6 +188,30 @@ def prepare_test(df_raw, med):
         df[c] = df[c].replace([np.inf, -np.inf], np.nan).fillna(med[c])
     return df
 
+def save_metrics_summary(file_path, y_true, y_score, threshold=0.5, header="COMBINED"):
+    """
+    Gera um resumo das métricas do modelo em formato txt
+    """
+    from sklearn.metrics import classification_report
+
+    y_pred = (y_score >= threshold).astype(int)
+    acc, bal, auc, f1p, f1n, mcc, cm = metrics_block(y_true, y_pred, y_score)
+
+    with open(file_path, "w") as f:
+        f.write(f"==== {header} ====\n")
+        f.write(f"Acurácia: {acc:.4f}\n")
+        f.write(f"Acurácia Balanceada: {bal:.4f}\n")
+        f.write(f"ROC-AUC: {auc:.4f}\n")
+        f.write(f"F1 Score (classe 1): {f1p:.4f}\n")
+        f.write(f"F1 Score (classe 0): {f1n:.4f}\n")
+        f.write(f"MCC: {mcc:.4f}\n\n")
+        f.write("Matriz de Confusão:\n")
+        f.write(np.array2string(cm, separator=", "))
+        f.write("\n\n")
+        f.write("Relatório detalhado por classe:\n")
+        f.write(classification_report(y_true, y_pred, digits=4))
+    print(f"[INFO] Resumo de métricas salvo em {file_path}")
+
 # ========= core =========
 def main(
     n_estimators=500,
@@ -333,6 +357,13 @@ def main(
                 plt.show()
             except Exception as e:
                 print(f"(Aviso) Falha ao plotar Permutation: {e}")
+
+    score_comb = rf.predict_proba(X_test)[:, 1]
+    print_report(f"[COMBINADO] n={n_estimators} depth={max_depth}", y_test,  score_comb, threshold)
+
+    # salvar resumo em txt
+    SUMMARY_PATH = os.path.join(MODEL_DIR, "metrics_summary.txt")
+    save_metrics_summary(SUMMARY_PATH, y_test, score_comb, threshold, header="COMBINADO")
 
 
 main(n_estimators=300, max_depth=20, threshold=0.5, plot=True, do_permutation=True,  perm_repeats=10)

@@ -176,6 +176,14 @@ def predict():
     except Exception as e:
         return jsonify({"error": f"Erro ao processar: {str(e)}"}), 400
 
+@app.route("/metrics_summary", methods=["GET"])
+def get_metrics_summary():
+    file_path = os.path.join(MODEL_PATH, "metrics_summary.txt")
+    if not os.path.exists(file_path):
+        return jsonify({"error": "Resumo de métricas não encontrado."}), 404
+    with open(file_path, "r") as f:
+        content = f.read()
+    return Response(content, mimetype="text/plain")
 
 @app.route("/", methods=["GET"])
 def health_check():
