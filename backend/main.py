@@ -118,7 +118,7 @@ def predict():
         include_index = request.args.get("include_index", "0").lower() in ("1", "true")
         min_raw_nonnull = int(request.args.get("min_raw_nonnull", 3))
         prob_format = (request.args.get("prob_format") or "percent").lower()  # percent|float
-        prob_decimals = int(request.args.get("prob_decimals", 5))
+        prob_decimals = int(request.args.get("prob_decimals", 8))
         keep_float = request.args.get("keep_float", "0").lower() in ("1", "true")
 
         # 1) ler input
