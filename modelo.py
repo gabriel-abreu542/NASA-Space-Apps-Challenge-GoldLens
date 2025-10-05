@@ -218,16 +218,16 @@ def main(
     
 
     # --- Split 80/20 por banco ---
-    koi, koi = train_test_split(
+    koi_tr, koi_te = train_test_split(
         koi, test_size=0.2, stratify=koi["label"].astype(int), random_state=42
     )
-    k2,  k2 = train_test_split(
+    k2_tr, k2_te = train_test_split(
         k2,  test_size=0.2, stratify=k2["label"].astype(int),  random_state=42
     )
 
 
     # --- Treino combinado ---
-    train_df = pd.concat([koi, k2], axis=0).copy()
+    train_df = pd.concat([koi_tr, k2_tr], axis=0).copy()
 
     # filtro de completude (≥50% não nulos, mínimo 3)
     comp = train_df[FEATURES].replace([np.inf, -np.inf], np.nan)
@@ -242,8 +242,8 @@ def main(
     X_train = train_df[FEATURES]
     y_train = train_df["label"].astype(int)
 
-    koi_te_prep = prepare_test(koi, med)
-    k2_te_prep  = prepare_test(k2, med)
+    koi_te_prep = prepare_test(koi_te, med)
+    k2_te_prep  = prepare_test(k2_te, med)
     test_df     = pd.concat([koi_te_prep, k2_te_prep], axis=0)
 
     X_test  = test_df[FEATURES]
