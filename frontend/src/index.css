@@ -1,1 +1,53 @@
 @import "tailwindcss";
+
+
+/* ...seu CSS anterior aqui... */
+
+@media (max-width: 428px) {
+  /* segurança geral */
+  html, body, .app { width: 100%; overflow-x: hidden; }
+  :root { --gutter: .75rem; } /* px menor no mobile */
+
+  /* shell */
+  .container { padding-inline: var(--gutter); }
+  main.app-main { padding-block: 1rem; }          /* py menor */
+  footer.app-footer { padding-block: 1.25rem; }   /* py menor */
+  .copyright { font-size: 10px; }
+
+  /* navbar: scroll horizontal em telas estreitas */
+  .navbar .container { padding-inline: var(--gutter); }
+  .navbar nav {
+    display: flex;
+    gap: .75rem;
+    overflow-x: auto;
+    white-space: nowrap;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+  }
+  .navbar nav::-webkit-scrollbar { display: none; }
+
+  /* grids: vira 1 coluna */
+  .grid-responsive { grid-template-columns: 1fr; gap: .75rem; }
+  .form-grid { grid-template-columns: 1fr; }
+
+  /* impedir estouro das colunas/caixas */
+  .min-w-0, .minw-0, .card, .table-wrap, .container, main.app-main { min-width: 0; }
+
+  /* inputs/botões compactos */
+  .card { padding: .75rem; border-radius: .75rem; }
+  .input, .textarea, .select { font-size: .9rem; padding: .6rem .75rem; }
+  button, .btn, [type="submit"] { padding: .65rem .9rem; font-size: .9rem; }
+
+  /* títulos/textos */
+  h1 { font-size: 1.125rem; }     /* ~text-lg */
+  p.lead { font-size: .85rem; }
+
+  /* textos longos (ex.: curva de luz) quebram linha */
+  .break-any { word-break: break-word; overflow-wrap: anywhere; }
+  .prewrap   { white-space: pre-wrap; word-break: break-word; }
+
+  /* tabelas e gráficos */
+  .table-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+  .table { min-width: 560px; font-size: .8125rem; }
+}
+

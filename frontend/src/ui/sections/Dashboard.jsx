@@ -10,7 +10,7 @@ export default function Dashboard() {
         <TrainingControls onTrain={useDemoTraining} />
 
         {/* Layout em duas colunas: métricas à esquerda e resultados à direita */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mt-6">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mt-6 ">
           <div className="lg:col-span-1">
             <MetricsOverview />
           </div>

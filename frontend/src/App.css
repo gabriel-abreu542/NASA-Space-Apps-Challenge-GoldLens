@@ -1,0 +1,19 @@
+
+        @media (min-width: 640px) {
+          :root { --gutter: 1.5rem; }     /* px-6 */
+          footer.app-footer { padding-block: 2.5rem; } /* py-10 aprox */
+          .copyright { font-size: 12px; }
+          h1 { font-size: 1.5rem; }       /* text-2xl */
+          p.lead { font-size: 0.95rem; }
+          .form-grid { grid-template-columns: repeat(2, 1fr); }
+          .grid-responsive { grid-template-columns: repeat(2, 1fr); }
+        }
+
+        /* Breakpoint >= 1024px (lg) */
+        @media (min-width: 1024px) {
+          :root { --gutter: 2rem; }       /* px-8 */
+          main.app-main { padding-block: 2rem; }
+          h1 { font-size: 1.875rem; }     /* text-3xl */
+          p.lead { font-size: 1rem; }
+          .grid-responsive { grid-template-columns: repeat(3, 1fr); }
+        }

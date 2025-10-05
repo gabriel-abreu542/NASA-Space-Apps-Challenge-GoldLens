@@ -1,4 +1,5 @@
 import { useState } from "react";
+import React from "react";
 
 export function Navbar({ onNavigate }) {
     const [open, setOpen] = useState(false);
