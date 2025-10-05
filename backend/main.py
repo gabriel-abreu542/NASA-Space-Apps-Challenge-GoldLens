@@ -108,6 +108,9 @@ def format_prob_column(out: pd.DataFrame, prob_format: str, prob_decimals: int, 
         out.drop(columns=["p_planet_float"], inplace=True)
     return out
 
+@app.route("/predict-individual", methods=["POST"])
+def predict_individual():
+    return
 
 @app.route("/predict", methods=["POST"])
 def predict():
