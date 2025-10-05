@@ -8,7 +8,7 @@ import { Meter } from "../Meter";
 const MetricsOverview = () => (
   <div className="space-y-6">
     {/* Números principais */}
-    <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
+    <div className="grid min-w-0 grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-3">
       <MetricBig label="Acurácia" value="0,91" />
       <MetricBig label="F1 Score" value="0,90" />
       <MetricBig label="ROC AUC" value="0,95" />

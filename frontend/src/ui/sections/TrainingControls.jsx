@@ -10,25 +10,37 @@ import { PurpleButton } from "../PurpleButton";
  */
 const TrainingControls = ({ onTrain }) => (
   <Card className="mt-6">
-    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-      {/* Escolha do modelo */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+    <div
+      className="
+        grid grid-cols-1 gap-4 sm:gap-6
+        md:grid-cols-[1fr_1fr_auto_auto] md:gap-x-6 md:gap-y-4 md:items-end
+      "
+    >
+      {/* Modelo */}
+      <div className="min-w-0">
         <Select
           label="Modelo"
-          options={["RandomForest", "LogisticRegression"]}
-          defaultValue="LightGBM"
+          options={["RandomForest", "LogisticRegression", "LightGBM"]}
+          defaultValue="RandomForest"  /* use um valor que exista nas options */
         />
       </div>
 
-      {/* Configurações adicionais */}
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
+      {/* Taxa de Teste */}
+      <div className="min-w-0">
         <NumberInput label="Taxa de Teste" defaultValue={0.2} />
-        <div className="flex items-end">
-          <Toggle label="Usar SMOTE (balanceamento)" checked />
-        </div>
-        <div className="flex items-end justify-start sm:justify-end">
-          <PurpleButton onClick={onTrain}>Treinar Modelo</PurpleButton>
-        </div>
+      </div>
+
+      {/* SMOTE */}
+      <div className="min-w-0 md:whitespace-nowrap">
+        <Toggle label="Usar SMOTE (balanceamento)" checked />
+      </div>
+
+      {/* Botão */}
+      <div className="justify-self-stretch sm:col-span-2 md:col-span-1 md:justify-self-end">
+        {/* se PurpleButton não aceitar className, o wrapper acima já garante largura */}
+        <PurpleButton onClick={onTrain} className="w-full md:w-auto">
+          Treinar Modelo
+        </PurpleButton>
       </div>
     </div>
   </Card>
