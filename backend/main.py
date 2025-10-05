@@ -9,11 +9,11 @@ app = Flask(__name__)
 CORS(app)
 
 # MODEL_PATH = "./rf_300.pkl"   # seu modelo salvo
-MODEL_PATH = "../models/rf_model.pkl"   # modelo treinado após remoçao de NaN e one hot encoding 
+MODEL_PATH = "models/rf_model.pkl"   # modelo treinado após remoçao de NaN e one hot encoding 
 if not os.path.exists(MODEL_PATH):
     raise FileNotFoundError(f"Modelo não encontrado em {MODEL_PATH}")
 
-FEATURES_PATH = os.getenv("FEATURES_PATH", "../models/rf_features.pkl")
+FEATURES_PATH = os.getenv("FEATURES_PATH", "models/rf_features.pkl")
 
 rf = joblib.load(MODEL_PATH)
 FEATURES = joblib.load(FEATURES_PATH)
@@ -108,6 +108,9 @@ def format_prob_column(out: pd.DataFrame, prob_format: str, prob_decimals: int, 
         out.drop(columns=["p_planet_float"], inplace=True)
     return out
 
+@app.route("/predict-individual", methods=["POST"])
+def predict_individual():
+    return
 
 @app.route("/predict", methods=["POST"])
 def predict():
