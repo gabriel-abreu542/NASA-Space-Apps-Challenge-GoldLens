@@ -8,16 +8,15 @@ import joblib, os, io
 app = Flask(__name__)
 CORS(app)
 
-MODEL_PATH = "./rf_300.pkl"   # seu modelo salvo
+# MODEL_PATH = "./rf_300.pkl"   # seu modelo salvo
+MODEL_PATH = "../models/rf_model.pkl"   # modelo treinado após remoçao de NaN e one hot encoding 
 if not os.path.exists(MODEL_PATH):
     raise FileNotFoundError(f"Modelo não encontrado em {MODEL_PATH}")
 
-rf = joblib.load(MODEL_PATH)
+FEATURES_PATH = os.getenv("FEATURES_PATH", "../models/rf_features.pkl")
 
-FEATURES = [
-    "period_d","duration_h","depth_ppm","snr",
-    "planet_radius_re","stellar_teff_k","stellar_logg","stellar_radius_rs"
-]
+rf = joblib.load(MODEL_PATH)
+FEATURES = joblib.load(FEATURES_PATH)
 
 # mapeamento de nomes comuns KOI/K2 -> nomes padronizados
 CANDS = {
@@ -129,7 +128,15 @@ def predict():
         X = prepare_input_to_features(df_in, min_raw_nonnull=min_raw_nonnull)
 
         # 3) prob de classe positiva
-        p1 = rf.predict_proba(X[FEATURES])[:, 1]
+        # --- Garante alinhamento com features do treino ---
+        X_aligned = X.reindex(columns=FEATURES, fill_value=0)
+
+        missing = [f for f in FEATURES if f not in X.columns]
+        extra = [f for f in X.columns if f not in FEATURES]
+        if missing or extra:
+            print(f"[WARN] Features ausentes: {missing}, extras: {extra}")
+
+        p1 = rf.predict_proba(X_aligned)[:, 1]
         out = X.copy()
         out["p_planet_float"] = pd.Series(p1, index=out.index)
 
@@ -169,6 +176,14 @@ def predict():
     except Exception as e:
         return jsonify({"error": f"Erro ao processar: {str(e)}"}), 400
 
+@app.route("/metrics_summary", methods=["GET"])
+def get_metrics_summary():
+    file_path = os.path.join(MODEL_PATH, "metrics_summary.txt")
+    if not os.path.exists(file_path):
+        return jsonify({"error": "Resumo de métricas não encontrado."}), 404
+    with open(file_path, "r") as f:
+        content = f.read()
+    return Response(content, mimetype="text/plain")
 
 @app.route("/", methods=["GET"])
 def health_check():

@@ -1,0 +1,21 @@
+==== COMBINADO ====
+Acurácia: 0.8767
+Acurácia Balanceada: 0.8766
+ROC-AUC: 0.9515
+F1 Score (classe 1): 0.8788
+F1 Score (classe 0): 0.8746
+MCC: 0.7534
+
+Matriz de Confusão:
+[[844, 125],
+ [117, 877]]
+
+Relatório detalhado por classe:
+              precision    recall  f1-score   support
+
+           0     0.8783    0.8710    0.8746       969
+           1     0.8752    0.8823    0.8788       994
+
+    accuracy                         0.8767      1963
+   macro avg     0.8768    0.8766    0.8767      1963
+weighted avg     0.8767    0.8767    0.8767      1963
