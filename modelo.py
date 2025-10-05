@@ -263,10 +263,12 @@ def main(
     ).fit(X_train, y_train)
 
     print("Salvando modelo...")
+            
+    # --- salvar modelo ---
+    joblib.dump(rf, os.path.join(MODEL_DIR, "rf_model.pkl"))
 
-    joblib.dump(rf, MODEL_PATH)
-
-    print(f"Modelo salvo em: {MODEL_PATH}")
+    # --- salvar lista de features usadas no treino ---
+    joblib.dump(FEATURES, os.path.join(MODEL_DIR, "rf_features.pkl"))
 
     # --- Avaliação ---
     score_comb = rf.predict_proba(X_test)[:, 1]
