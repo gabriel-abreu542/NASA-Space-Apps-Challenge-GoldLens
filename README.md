@@ -30,9 +30,12 @@ By combining **scientific rigor** with **accessibility**, GoldLens serves both a
 ├── artifacts # Trained ML artifacts
 ├── model.pkl # Serialized model ready for predictions
 ├── backend/ # Python server (training, prediction, API)
+├── datasets/ # CSV datasets used for training and testing of the model
 ├── frontend/ # React + Vite web application
 ├── modelo.py # Model training and serialization
 └── README.md # Documentation
+
+Observation: We suggest the use of clean data for the analysis by the model (tests can be made with the "CANDIDATE" lines of the "clean_K2" and "clean_KOI" datasets). An improved version of the software was used applying Federated Learning on the TOI dataset, along with the former K2 and KOI datasets, and could deal with "dirty", unprocessed data. However, due to problems on the integration of the model constructed with the web application and a preprocessing pipeline, it could not be included on the Project submitted for the NASA Space Apps Challenge 2025.
 
 ```
 
