@@ -110,7 +110,32 @@ def format_prob_column(out: pd.DataFrame, prob_format: str, prob_decimals: int, 
 
 @app.route("/predict-individual", methods=["POST"])
 def predict_individual():
-    return
+    try:
+        # 1) Ler o JSON do corpo da requisição
+        data = request.get_json()
+
+        if not data:
+            return jsonify({"error": "Nenhum dado enviado no corpo da requisição."}), 400
+
+        # 2) Converter em DataFrame (mesmo formato usado no treino)
+        df_in = pd.DataFrame([data])
+
+        # 3) Pré-processamento e alinhamento de features
+        X = prepare_input_to_features(df_in)
+        X_aligned = X.reindex(columns=FEATURES, fill_value=0)
+
+        # 4) Obter probabilidade da classe positiva (exoplaneta)
+        p_planet = rf.predict_proba(X_aligned)[:, 1][0]
+
+        # 5) Retornar resultado como JSON simples
+        return jsonify({
+            "probability": float(p_planet),
+            "probability_percent": round(float(p_planet) * 100, 4)
+        })
+
+    except Exception as e:
+        print("[ERROR] /predict-individual:", str(e))
+        return jsonify({"error": f"Erro ao processar: {str(e)}"}), 400
 
 @app.route("/predict", methods=["POST"])
 def predict():

@@ -4,12 +4,13 @@
 
 import numpy as np
 import pandas as pd
+import json
 from pathlib import Path
 from sklearn.model_selection import train_test_split
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import (
     accuracy_score, balanced_accuracy_score, roc_auc_score,
-    f1_score, matthews_corrcoef, confusion_matrix
+    f1_score, matthews_corrcoef, confusion_matrix, classification_report
 )
 from sklearn.inspection import permutation_importance
 from sklearn.metrics import make_scorer
@@ -188,30 +189,40 @@ def prepare_test(df_raw, med):
         df[c] = df[c].replace([np.inf, -np.inf], np.nan).fillna(med[c])
     return df
 
-def save_metrics_summary(file_path, y_true, y_score, threshold=0.5, header="COMBINED"):
+def save_metrics_summary_json(file_path, y_true, y_score, threshold=0.5, header="COMBINED"):
     """
-    Gera um resumo das métricas do modelo em formato txt
+    Gera um resumo das métricas do modelo em formato JSON para uso no frontend.
     """
-    from sklearn.metrics import classification_report
-
+    # Predições binárias com base no limiar
     y_pred = (y_score >= threshold).astype(int)
+
+    # Calcula métricas principais
     acc, bal, auc, f1p, f1n, mcc, cm = metrics_block(y_true, y_pred, y_score)
 
-    with open(file_path, "w") as f:
-        f.write(f"==== {header} ====\n")
-        f.write(f"Acurácia: {acc:.4f}\n")
-        f.write(f"Acurácia Balanceada: {bal:.4f}\n")
-        f.write(f"ROC-AUC: {auc:.4f}\n")
-        f.write(f"F1 Score (classe 1): {f1p:.4f}\n")
-        f.write(f"F1 Score (classe 0): {f1n:.4f}\n")
-        f.write(f"MCC: {mcc:.4f}\n\n")
-        f.write("Matriz de Confusão:\n")
-        f.write(np.array2string(cm, separator=", "))
-        f.write("\n\n")
-        f.write("Relatório detalhado por classe:\n")
-        f.write(classification_report(y_true, y_pred, digits=4))
-    print(f"[INFO] Resumo de métricas salvo em {file_path}")
+    # Relatório detalhado por classe (como dicionário)
+    class_report = classification_report(y_true, y_pred, output_dict=True)
 
+    # Monta o dicionário final
+    metrics_data = {
+        "header": header,
+        "threshold": threshold,
+        "metrics": {
+            "accuracy": round(acc, 4),
+            "balanced_accuracy": round(bal, 4),
+            "roc_auc": round(auc, 4),
+            "f1_class_1": round(f1p, 4),
+            "f1_class_0": round(f1n, 4),
+            "mcc": round(mcc, 4),
+        },
+        "confusion_matrix": np.array(cm).tolist(),
+        "classification_report": class_report
+    }
+
+    # Salva em JSON
+    with open(file_path, "w", encoding="utf-8") as f:
+        json.dump(metrics_data, f, indent=4, ensure_ascii=False)
+
+    print(f"[INFO] Resumo de métricas (JSON) salvo em {file_path}")
 # ========= core =========
 def main(
     n_estimators=500,
@@ -362,8 +373,8 @@ def main(
     print_report(f"[COMBINADO] n={n_estimators} depth={max_depth}", y_test,  score_comb, threshold)
 
     # salvar resumo em txt
-    SUMMARY_PATH = os.path.join(MODEL_DIR, "metrics_summary.txt")
-    save_metrics_summary(SUMMARY_PATH, y_test, score_comb, threshold, header="COMBINADO")
+    SUMMARY_PATH = os.path.join(MODEL_DIR, "metrics_summary.json")
+    save_metrics_summary_json(SUMMARY_PATH, y_test, score_comb, threshold, header="COMBINADO")
 
 
 main(n_estimators=300, max_depth=20, threshold=0.5, plot=True, do_permutation=True,  perm_repeats=10)

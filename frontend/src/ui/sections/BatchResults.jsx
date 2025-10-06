@@ -6,8 +6,9 @@ const BatchResults = ({ data, rowsPerPage = 10 }) => {
 
   if (!data || !Array.isArray(data) || data.length === 0) return null;
 
-  const columns = Object.keys(data[0]);
+  let columns = Object.keys(data[0]);
   
+  columns = columns.filter(col => col !== "p_planet").concat("p_planet");
 
   const totalPages = Math.ceil(data.length / rowsPerPage);
 

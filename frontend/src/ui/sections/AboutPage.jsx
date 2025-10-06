@@ -8,9 +8,12 @@ const AboutPage = () => {
     <>
     <Card>
     <p index={3} title="Treinamento do Modelo">
-      Usamos <strong>LightGBM</strong> (default) e avaliamos com validação estratificada.
-      Hiperparâmetros podem ser ajustados na aba de <em>Experiments</em>.
+      GoldLens é uma solução baseada em IA desenvolvida para auxiliar na detecção de exoplanetas em conjuntos de dados astronômicos.
+      Ao combinar um backend em Python com uma interface web moderna, nossa plataforma permite que os usuários pré-processarem dados, treinem 
+      modelos de aprendizado de máquina e gerem previsões em tempo real.
+      O GoldLens transforma processos científicos complexos em uma ferramenta acessível, colaborativa e escalável, tornando a exploração espacial mais próxima de todos.
     </p>
+    
     <p index={4} title="Classificação & Explicações">
       Geramos rótulos (Confirmado, Candidato, Falso Positivo), expondo a
       importância de variáveis e matrizes de confusão para auditoria.

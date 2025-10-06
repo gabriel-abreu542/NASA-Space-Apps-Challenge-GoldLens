@@ -6,7 +6,7 @@ const Table = ({ columns, rows }) => {
           <tr>
             {columns.map((col, index) => (
               <th key={index} className="px-4 py-3">
-                {col}
+                {col === "p_planet" ? "Probabilidade" : col}
               </th>
             ))}
           </tr>

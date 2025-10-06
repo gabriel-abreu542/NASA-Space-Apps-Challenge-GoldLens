@@ -4,109 +4,123 @@ import { PurpleButton } from "../PurpleButton";
 import { Card } from "../Card";
 import { Select } from "../Select";
 
-const AnalyzeCandidate = ( onAnalyze ) => {
-
-    const [lightCurve, setLightCurve] = useState("");
+const AnalyzeCandidate = ({ onAnalyze }) => {
+    const [source, setSource] = useState("teste");
     const [periodDays, setPeriodDays] = useState("");
+    const [durationH, setDurationH] = useState("");
     const [depthPpm, setDepthPpm] = useState("");
-    const [mission, setMission] = useState("");
-    const [targetName, setTargetName] = useState("");
+    const [snr, setSnr] = useState("");
+    const [planetRadiusRe, setPlanetRadiusRe] = useState("");
+    const [stellarTeffK, setStellarTeffK] = useState("");
+    const [stellarLogg, setStellarLogg] = useState("");
+    const [stellarRadiusRs, setStellarRadiusRs] = useState("");
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        onAnalyze({ targetName, mission, lightCurve, periodDays, depthPpm });
+        onAnalyze({
+            source,
+            period_d: periodDays,
+            duration_h: durationH,
+            depth_ppm: depthPpm,
+            snr,
+            planet_radius_re: planetRadiusRe,
+            stellar_teff_k: stellarTeffK,
+            stellar_logg: stellarLogg,
+            stellar_radius_rs: stellarRadiusRs
+        });
     };
 
-    const loadExample = (type) => {
-        if (type === "confirmed") {
-        setTargetName("Kepler-452b");
-        setMission("Kepler");
-        setLightCurve("1.0002, 0.9998, 0.9995, ...");
-        setPeriodDays(385);
-        setDepthPpm(200);
-        } else if (type === "fp") {
-        setTargetName("KOI-1234");
-        setMission("Kepler");
-        setLightCurve("1.0001, 1.0000, 0.9999, ...");
-        setPeriodDays(2.5);
-        setDepthPpm(10);
-        }
+    const loadExample = () => {
+        // Exemplo baseado no input fornecido
+        
+        setPeriodDays(124326997);
+        setDurationH(781);
+        setDepthPpm(2403.0);
+        setSnr(115.0);
+        setPlanetRadiusRe(188.0);
+        setStellarTeffK(54800.0);
+        setStellarLogg(422.0);
+        setStellarRadiusRs(1229.0);
+        console.log("ADSAS")
     };
-
 
     return (
         <Card>
             <form onSubmit={handleSubmit}>
-                <div className="flex flex-col gap-2">
-                    <div className="flex flex-col gap-2">
-                        <label className="text-sm text-zinc-400">Nome do Alvo</label>
-                        <input
-                        value={targetName}
-                        onChange={(e) => setTargetName(e.target.value)}
-                        placeholder="Ex: Kepler-452b"
-                        className="w-full rounded-xl bg-zinc-950/60 border border-zinc-800 px-4 py-3 text-sm text-zinc-200 focus:outline-none focus:ring-2 focus:ring-violet-500"
+                <div className="flex flex-col gap-3">
+                    <label className="text-sm text-zinc-400">Origem dos Dados (source)</label>
+                    <Select
+                        label=""
+                        value={source}
+                        onChange={(e) => setSource(e.target.value)}
+                        options={["Kepler", "TESS"]}
+                    />
+
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-2">
+                        <NumberInput
+                            label="Período (dias)"
+                            value={periodDays}
+                            onChange={(e) => setPeriodDays(e.target.value === "" ? "" : Number(e.target.value))}
+                            step={0.01}
+                        />
+                        <NumberInput
+                            label="Duração (horas)"
+                            value={durationH}
+                            onChange={(e) => setDurationH(e.target.value === "" ? "" : Number(e.target.value))}
+                            step={0.01}
+                        />
+                        <NumberInput
+                            label="Profundidade (ppm)"
+                            value={depthPpm}
+                            onChange={(e) => setDepthPpm(e.target.value === "" ? "" : Number(e.target.value))}
+                            step={1}
+                        />
+                        <NumberInput
+                            label="SNR"
+                            value={snr}
+                            onChange={(e) => setSnr(e.target.value === "" ? "" : Number(e.target.value))}
+                            step={0.1}
+                        />
+                        <NumberInput
+                            label="Raio do Planeta (R⊕)"
+                            value={planetRadiusRe}
+                            onChange={(e) => setPlanetRadiusRe(e.target.value === "" ? "" : Number(e.target.value))}
+                            step={0.1}
+                        />
+                        <NumberInput
+                            label="Temperatura da Estrela (K)"
+                            value={stellarTeffK}
+                            onChange={(e) => setStellarTeffK(e.target.value === "" ? "" : Number(e.target.value))}
+                            step={1}
+                        />
+                        <NumberInput
+                            label="Log(g) da Estrela"
+                            value={stellarLogg}
+                            onChange={(e) => setStellarLogg(e.target.value === "" ? "" : Number(e.target.value))}
+                            step={0.1}
+                        />
+                        <NumberInput
+                            label="Raio da Estrela (R☉)"
+                            value={stellarRadiusRs}
+                            onChange={(e) => setStellarRadiusRs(e.target.value === "" ? "" : Number(e.target.value))}
+                            step={0.1}
                         />
                     </div>
 
-                    <Select
-                        label="Missão Espacial"
-                        value={mission}
-                        onChange={(e) => setMission(e.target.value)}
-                        options={["Kepler", "K2", "TESS"]}
-                    />
-
-                    <label className="text-sm text-zinc-400">Dados da Curva de Luz</label>
-                    <textarea
-                        rows={6}
-                        value={lightCurve}
-                        onChange={(e) => setLightCurve(e.target.value)}
-                        placeholder="1.0002, 0.9998, 0.9995, ..."
-                        className="w-full rounded-xl bg-zinc-950/60 border border-zinc-800 px-4 py-3 text-sm text-zinc-200 focus:outline-none focus:ring-2 focus:ring-violet-500"
-                    />
-
-                    <div className="flex flex-wrap gap-3 pt-2">
+                    <div className="flex gap-3 mt-4">
                         <button
-                        type="button"
-                        onClick={() => loadExample("confirmed")}
-                        className="rounded-xl border border-zinc-800 px-4 py-2 text-sm hover:bg-zinc-900"
+                            type="button"
+                            onClick={loadExample}
+                            className="rounded-xl border border-zinc-800 px-4 py-2 text-sm hover:bg-zinc-900"
                         >
-                        Carregar Exemplo – Planeta Confirmado
+                            Carregar Exemplo
                         </button>
-                        <button
-                        type="button"
-                        onClick={() => loadExample("fp")}
-                        className="rounded-xl border border-zinc-800 px-4 py-2 text-sm hover:bg-zinc-900"
-                        >
-                        Carregar Exemplo – Falso Positivo
-                        </button>
+                        <PurpleButton type="submit">🔍 Analisar Candidato</PurpleButton>
                     </div>
                 </div>
-
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-4">
-                <NumberInput
-                    label="Período (dias)"
-                    value={periodDays}
-                    onChange={(e) =>
-                    setPeriodDays(e.target.value === "" ? "" : Number(e.target.value))
-                    }
-                    step={0.01}
-                />
-                <NumberInput
-                    label="Profundidade (ppm)"
-                    value={depthPpm}
-                    onChange={(e) =>
-                    setDepthPpm(e.target.value === "" ? "" : Number(e.target.value))
-                    }
-                    step={1}
-                />
-                </div>
-
-                <div className="pt-4">
-                    <PurpleButton type="submit">🔍 Analisar Candidato</PurpleButton>
-                </div>
             </form>
-            </Card>
-    )
-}
+        </Card>
+    );
+};
 
 export default AnalyzeCandidate;
