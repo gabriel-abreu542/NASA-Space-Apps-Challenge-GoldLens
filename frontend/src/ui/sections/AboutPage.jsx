@@ -52,14 +52,9 @@ const AboutPage = () => {
 
   {/* Call to action */}
   <div className="flex items-center my-15 justify-between gap-4 bg-gradient-to-r from-violet-800/20 to-fuchsia-800/10 border border-violet-900/40 rounded-2xl p-6">
-  <div>
-  <div className="text-sm text-zinc-300 ">Pronto para testar?</div>
-  <div className="text-xl font-semibold text-white">Treine seu primeiro modelo em minutos</div>
-  </div>
-  
   
   <button className="px-5 py-3 rounded-xl bg-violet-600 hover:bg-violet-500 active:bg-violet-700 transition-colors text-sm font-medium" >
-  <a href="/treinamento"> Ir para Training </a>
+  <a href="/treinamento"> Ir para Dashboard </a>
   </button>
   </div>
 
