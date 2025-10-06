@@ -131,7 +131,7 @@ These metrics provide insights into model performance and help compare different
 
 # 👨‍🚀 Team
 
-GoldLens is developed by a multidisciplinary team of four contributors:
+GoldLens is developed by Heart of Gold, a multidisciplinary team of five contributors:
 
 - Pablo Calil
 
@@ -140,6 +140,8 @@ GoldLens is developed by a multidisciplinary team of four contributors:
 - Breno Resende
 
 - João Castelar
+
+- Matheus Lopes
 
 Each member brings expertise in data science, full stack development, and software engineering, working collaboratively to unite technological innovation and scientific exploration.
 
