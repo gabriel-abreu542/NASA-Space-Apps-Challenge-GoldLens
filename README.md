@@ -106,9 +106,8 @@ https://localhost:5173
 | Endpoint      | Method    | Description                                           |
 | ------------- | --------- | ----------------------------------------------------- |
 | `/health`     | `GET`     | Returns service status                                |
-| `/predict`    | `POST`    | Accepts JSON input and returns model predictions      |
-| `/train`      | `POST`    | Retrains the model with new data                      |
-| ------------- | --------- | ----------------------------------------------------- |
+| `/predict`    | `POST`    | Accepts CSV input and returns model predictions of multiple cases      |
+| `/predict-individual` | `POST` | Accepts a JSON describing a single case and returns its prediction |
 
 These endpoints complete the workflow of model training, validation, and inference.
 
