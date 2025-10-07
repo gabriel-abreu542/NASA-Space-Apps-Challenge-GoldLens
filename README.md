@@ -5,7 +5,7 @@
 **GoldLens** is a project developed for the **NASA Space Apps Challenge 2025**, under the challenge **“A World Away: Hunting for Exoplanets with AI.”**  
 The project’s primary objective is to design and implement an artificial intelligence solution that supports the detection of **exoplanets** using **publicly available astronomical data**.
 
-The solution integrates a **Python backend** with a **modern web frontend**, enabling users to train, evaluate, and apply machine learning models through an accessible and interactive interface.  
+The solution integrates a **Python backend** with a **modern web frontend**, enabling users to evaluate and apply machine learning models through an accessible and interactive interface.  
 GoldLens seeks to connect **advanced data science** with **astronomy** while promoting **open collaboration** and **scientific discovery**.
 
 ---
