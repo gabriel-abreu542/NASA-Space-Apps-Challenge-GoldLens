@@ -44,22 +44,20 @@ Observation: We suggest the use of clean data for the analysis by the model (tes
 ## 🧠 Technologies
 
 ### **Backend**
-
 - **Language:** Python 3.10+
 - **Libraries:**
-  - `scikit-learn` — machine learning
-  - `imbalanced-learn (SMOTE)` — class balancing
-  - `pandas`, `numpy` — data preprocessing
-  - `Flask` or `FastAPI` — RESTful API
-  - `joblib` / `pickle` — model serialization
+        - `scikit-learn` — machine learning
+        - `pandas`, `numpy` — data preprocessing
+        - `Flask` — RESTful API
+        - `joblib` — model serialization
 
 ### **Frontend**
 
-- **Language:** JavaScript / TypeScript
+- **Language:** JavaScript
 - **Framework:** React + Vite
 - **Styling:** TailwindCSS (responsive design)
-- **Communication:** Axios or Fetch API
-
+- **Communication:** Fetch API
+  
 This stack ensures a **robust**, **scalable**, and **user-friendly** platform.
 
 ---
